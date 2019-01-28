@@ -1,0 +1,39 @@
+<h1>Player Page</h1>
+
+<h2>{{.PlayerData.MlbData.FullName}}</h2>
+
+<h3>{{.TeamData.Name}}</h3>
+
+<h3>Bulldogs: {{.TeamData.Bulldogs}}</h3>
+
+<h3>Updated: {{.PlayerData.Updated}}</h3>
+
+<div>
+    <h2>Last Three Games</h2>
+    {{range .TeamData.LastGames}}
+        <h3>Date: {{.GameDate}}</h3>
+        <p>Home: {{.Teams.Home.Team.Name}} {{.Teams.Home.Score}}</p>
+        <p>Away: {{.Teams.Away.Team.Name}} {{.Teams.Away.Score}}</p>
+    {{end}}
+</div>
+
+<div>
+    <h2>Next Three Games</h2>
+    {{range .TeamData.NextGames}}
+        <h3>Date: {{.GameDate}}</h3>
+        <p>Home: {{.Teams.Home.Team.Name}}</p>
+        <p>Away: {{.Teams.Away.Team.Name}}</p>
+    {{end}}
+</div>
+
+<div>
+    <h2>Schedule</h2>
+    {{range .TeamData.Schedule}}
+        <p>{{.Date}}</p>
+        <div>
+        {{range .Games}}
+            <p>{{.Teams.Away.Team.Name}} at {{.Teams.Home.Team.Name}}</p>
+        {{end}}
+        </div>
+    {{end}}
+</div>

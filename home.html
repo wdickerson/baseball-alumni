@@ -1,0 +1,25 @@
+<h1>State to the Show!</h1>
+
+<h1>Last days:</h1>
+{{ range .GameStore.LastDays }}
+    <h2>{{.Date}}</h2>
+    {{ range .Games }}
+        <h3>gametime: {{.GameDate}}</h3>
+        <p>Home: {{.Teams.Home.Team.Name}} {{.Teams.Home.Score}}</p>
+        <p>Away: {{.Teams.Away.Team.Name}} {{.Teams.Away.Score}}</p>
+    {{ end }}
+{{ end }}
+
+<h1>Nexy days:</h1>
+{{ range .GameStore.NextDays }}
+    <h2>{{.Date}}</h2>
+    {{ range .Games }}
+        <h3>gametime: {{.GameDate}}</h3>
+        <p>Home: {{.Teams.Home.Team.Name}} {{.Teams.Home.Score}}</p>
+        <p>Away: {{.Teams.Away.Team.Name}} {{.Teams.Away.Score}}</p>
+    {{ end }}
+{{ end }}
+
+{{ range .PlayerStore }}
+    <p><a href='/player/{{.UrlName}}'>{{.MlbData.FullName}}</a></p>
+{{ end }}
