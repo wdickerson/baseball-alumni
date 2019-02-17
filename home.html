@@ -1,25 +1,81 @@
-<h1>State to the Show!</h1>
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-<h1>Last days:</h1>
-{{ range .GameStore.LastDays }}
-    <h2>{{.Date}}</h2>
-    {{ range .Games }}
-        <h3>gametime: {{.GameDate}}</h3>
-        <p>Home: {{.Teams.Home.Team.Name}} {{.Teams.Home.Score}}</p>
-        <p>Away: {{.Teams.Away.Team.Name}} {{.Teams.Away.Score}}</p>
-    {{ end }}
-{{ end }}
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Fira+Sans" rel="stylesheet">
+    <link href="/assets/style.css" rel="stylesheet" type="text/css" />
+    <title>State to the Show</title>
+</head>  
+    
+<body>
 
-<h1>Nexy days:</h1>
-{{ range .GameStore.NextDays }}
-    <h2>{{.Date}}</h2>
-    {{ range .Games }}
-        <h3>gametime: {{.GameDate}}</h3>
-        <p>Home: {{.Teams.Home.Team.Name}} {{.Teams.Home.Score}}</p>
-        <p>Away: {{.Teams.Away.Team.Name}} {{.Teams.Away.Score}}</p>
-    {{ end }}
-{{ end }}
+    <div id="header">
+        <div id="title-bar">State to the Show</div>
+        <div class="tab-bar">
+            <a class="tab-link">
+                <button class="tab-button selected">GAMES</button>
+            </a>
+            <a class="tab-link" href="players">
+                <button class="tab-button">PLAYERS</button>
+            </a>
+        </div>
+    </div>
+    
+    <div id="content">
+        <div class="schedule-header">Recent games:</div>
+        <div class="schedule">
 
-{{ range .PlayerStore }}
-    <p><a href='/player/{{.UrlName}}'>{{.MlbData.FullName}}</a></p>
-{{ end }}
+            {{ range .GameStore.LastDays }}
+            <div class="schedule-day">
+                <div class="day-header">{{.Date}}</div>
+                <div class="day-content">
+
+                    {{ range .Games }}
+                    <div class="game">
+                        <div class="team-row">
+                            <div class="team-name">{{.Teams.Home.Team.Name}}</div>
+                            <div class="team-score">{{.Teams.Home.Score}}</div>
+                        </div>
+                        <div class="team-row">
+                            <div class="team-name">@ {{.Teams.Away.Team.Name}}</div>
+                            <div class="team-score">{{.Teams.Away.Score}}</div>
+                        </div>
+                    </div>
+                    {{ end }}
+
+                </div>
+            </div>
+            {{ end }}
+
+        </div>
+
+        <div class="schedule-header">Upcoming games:</div>
+        <div class="schedule">
+
+            {{ range .GameStore.NextDays }}
+            <div class="schedule-day">
+                <div class="day-header">{{.Date}}</div>
+                <div class="day-content">
+
+                    {{ range .Games }}
+                    <div class="game">
+                        <div class="team-row">
+                            <div class="team-name">{{.Teams.Home.Team.Name}}</div>
+                            <div class="team-score"></div>
+                        </div>
+                        <div class="team-row">
+                            <div class="team-name">@ {{.Teams.Away.Team.Name}}</div>
+                            <div class="team-score"></div>
+                        </div>
+                    </div>
+                    {{ end }}
+
+                </div>
+            </div>
+            {{ end }}
+
+        </div>
+    </div>
+    
+</body>
+</html>

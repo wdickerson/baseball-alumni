@@ -1,0 +1,123 @@
+html {
+  font-family: 'Fira Sans', sans-serif;
+}
+
+body {
+  background-color: #fbfbfb;
+  width: 100vw;
+  overflow-x: hidden;
+}
+
+#header {
+  position: fixed;
+}
+
+#title-bar {
+  line-height: 2rem;
+  font-size: 1.5rem;
+  text-align: center;
+  justify-content: center;
+  padding: 1rem 0 1rem 0;
+  color: white;
+  background-color: #660000;
+  
+}
+
+.tab-bar {
+  padding: 0 4vw 0 4vw;
+  background-color: #660000;
+  overflow: hidden;
+  
+}
+
+.tab-button {
+  background-color: #660000;
+  float: left;
+  width: 46vw;
+  padding: 1rem;
+  line-height: 1.5rem;
+  font-size: 1rem;
+  border: none;
+  color: white;
+}
+
+.tab-button.selected {
+  border-bottom: white solid 3px;
+}
+
+.tab-link {
+  text-decoration: none;
+  cursor: inherit;
+}
+
+.tab-button:hover {
+  cursor: pointer;
+}
+
+#content {
+  padding-top: 8rem;
+  text-align: center;
+}
+
+.schedule-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 1em;
+}
+
+.day-content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 62vw;
+}
+
+.game {
+  background-color: white;
+  border: 1px solid #dddddd;
+  box-shadow: 1px 1px #c2c2c2;
+  border-radius: 2px;
+  flex: 0 0 49%;
+  margin: .5em 0 .2em 0;
+  padding: .5em 1.5em;
+}
+
+.team-row {
+  display: flex;
+  justify-content: space-between;
+  line-height: 2em
+}
+
+
+@media screen and (max-width: 740px) {
+  .day-content {
+      width: 95vw;
+  }
+  
+  .game {
+      flex: 0 0 100%;
+  }
+}
+
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+margin: 0;
+padding: 0;
+border: 0;
+font-size: 16px;
+vertical-align: baseline;
+box-sizing: border-box;
+}

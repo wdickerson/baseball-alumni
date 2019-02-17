@@ -1,0 +1,33 @@
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Fira+Sans" rel="stylesheet">
+    <link href="/assets/style.css" rel="stylesheet" type="text/css" />
+    <title>State to the Show</title>
+</head>  
+    
+<body>
+    
+    <div id="header">
+        <div id="title-bar">State to the Show</div>
+        <div class="tab-bar">
+            <a class="tab-link" href="/">
+                <button class="tab-button">GAMES</button>
+            </a>
+            <a class="tab-link">
+                <button class="tab-button selected">PLAYERS</button>
+            </a>
+        </div>
+    </div>
+    
+    <div id="content">
+
+        {{ range .PlayerStore }}
+        <p><a href='/player/{{.UrlName}}'>{{.MlbData.FullName}}</a></p>
+        {{ end }}
+        
+    </div>
+
+</body>
+</html>

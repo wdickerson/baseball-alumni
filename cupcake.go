@@ -318,6 +318,13 @@ func handler(w http.ResponseWriter, r *http.Request) {
     });
 }
 
+func playersHandler(w http.ResponseWriter, r *http.Request) {
+    t, _ := template.ParseFiles("players.html")
+    t.Execute(w, map[string]interface{}{
+        "PlayerStore": playerStore,
+    });
+}
+
 func playerHandler(w http.ResponseWriter, r *http.Request) {
     playerId := PLAYER_IDS[r.URL.Path[len("/player/"):]]
     myPlayer := playerStore[playerId];
@@ -363,8 +370,12 @@ func main() {
     // few days that feature bulldogs
     updateGameStore()
 
+    staticFs := http.FileServer(http.Dir("assets"))
+    http.Handle("/assets/", http.StripPrefix("/assets/", staticFs))
+
     http.HandleFunc("/", handler)
     http.HandleFunc("/player/", cacher(playerHandler))
+    http.HandleFunc("/players/", playersHandler)
 
     log.Fatal(http.ListenAndServe(":8080", nil))
     fmt.Println("Terminating the application...")
