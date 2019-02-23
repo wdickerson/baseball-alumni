@@ -27,18 +27,30 @@
 
             {{ range .GameStore.LastDays }}
             <div class="schedule-day">
-                <div class="day-header">{{.Date}}</div>
+                <div class="day-header">{{.PrettyDate}}</div>
                 <div class="day-content">
 
                     {{ range .Games }}
                     <div class="game">
-                        <div class="team-row">
-                            <div class="team-name">{{.Teams.Home.Team.Name}}</div>
-                            <div class="team-score">{{.Teams.Home.Score}}</div>
-                        </div>
-                        <div class="team-row">
-                            <div class="team-name">@ {{.Teams.Away.Team.Name}}</div>
-                            <div class="team-score">{{.Teams.Away.Score}}</div>
+                        <div class="game-left">
+                            <div class="team-row">
+                                <div class="team-name">{{.Teams.Home.Team.Name}}</div>
+                                <div class="team-score">{{.Teams.Home.Score}}</div>
+                            </div>
+                            <div class="bulldog-row">
+                                {{ range .Teams.Home.Team.Bulldogs }}
+                                <div class="bulldog-name">{{ .InitLastName }}</div>
+                                {{ end }}
+                            </div>
+                            <div class="team-row">
+                                <div class="team-name">@ {{.Teams.Away.Team.Name}}</div>
+                                <div class="team-score">{{.Teams.Away.Score}}</div>
+                            </div>
+                            <div class="bulldog-row">
+                                {{ range .Teams.Away.Team.Bulldogs }}
+                                <div class="bulldog-name">{{ .InitLastName }}</div>
+                                {{ end }}
+                            </div>
                         </div>
                     </div>
                     {{ end }}
@@ -54,19 +66,30 @@
 
             {{ range .GameStore.NextDays }}
             <div class="schedule-day">
-                <div class="day-header">{{.Date}}</div>
+                <div class="day-header">{{.PrettyDate}}</div>
                 <div class="day-content">
 
                     {{ range .Games }}
                     <div class="game">
-                        <div class="team-row">
-                            <div class="team-name">{{.Teams.Home.Team.Name}}</div>
-                            <div class="team-score"></div>
+                        <div class="game-left">
+                            <div class="team-row">
+                                <div class="team-name">{{.Teams.Home.Team.Name}}</div>
+                            </div>
+                            <div class="bulldog-row">
+                                {{ range .Teams.Home.Team.Bulldogs }}
+                                <div class="bulldog-name">{{ .InitLastName }}</div>
+                                {{ end }}
+                            </div>
+                            <div class="team-row">
+                                <div class="team-name">@ {{.Teams.Away.Team.Name}}</div>
+                            </div>
+                            <div class="bulldog-row">
+                                {{ range .Teams.Away.Team.Bulldogs }}
+                                <div class="bulldog-name">{{ .InitLastName }}</div>
+                                {{ end }}
+                            </div>
                         </div>
-                        <div class="team-row">
-                            <div class="team-name">@ {{.Teams.Away.Team.Name}}</div>
-                            <div class="team-score"></div>
-                        </div>
+                        <div class="game-right">{{ .PrettyGameDate }}</div>
                     </div>
                     {{ end }}
 
