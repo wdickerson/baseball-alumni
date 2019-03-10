@@ -31,8 +31,10 @@ type MlbPeopleResponse struct {
 
 type Game struct {
 	GamePk         int
+	GameType       string
 	GameDate       time.Time
 	PrettyGameDate string
+	PrettyGameTime string
 	Teams          struct {
 		Away struct {
 			IsWinner bool
@@ -108,13 +110,10 @@ func (p *PlayerData) updatePlayerMlbData() {
 }
 
 func (myTeam *TeamData) updateSchedule() {
-
-	fmt.Println("update sched for", myTeam.Name)
-
 	// Lets get the schedule/results for this players team
 	// app-schedule-1.json
-	// response, err := http.Get(fmt.Sprintf("https://statsapi.mlb.com/api/v1/schedule/?sportId=1&teamId=%s&season=2019&startDate=2019-01-01&endDate=2019-12-31", myTeam.ID))
-	response, err := http.Get(fmt.Sprintf("https://statsapi.mlb.com/api/v1/schedule/?sportId=1&teamId=%s&season=2018&startDate=2018-01-01&endDate=2018-12-31", myTeam.ID))
+	response, err := http.Get(fmt.Sprintf("https://statsapi.mlb.com/api/v1/schedule/?sportId=1&teamId=%s&season=2019&startDate=2019-01-01&endDate=2020-12-31", myTeam.ID))
+	// response, err := http.Get(fmt.Sprintf("https://statsapi.mlb.com/api/v1/schedule/?sportId=1&teamId=%s&season=2018&startDate=2018-01-01&endDate=2018-12-31", myTeam.ID))
 
 	if err != nil {
 		fmt.Printf("The HTTP request failed with error %s\n", err)
@@ -155,6 +154,11 @@ func (myTeam *TeamData) updateSchedule() {
 				break
 			}
 
+			// if today's date is not in our known schedule
+			if len(myTeam.Schedule) <= j {
+				break
+			}
+
 			for _, game := range myTeam.Schedule[j].Games {
 				// if the game status is finished, add it to LastGames
 				if len(myTeam.LastGames) >= 3 {
@@ -163,13 +167,13 @@ func (myTeam *TeamData) updateSchedule() {
 
 				// Would rather look at StatusCode, but using a mock time
 				// in the past for CURRENT_TIME so we have to compare dates
-				if game.GameDate.Before(CURRENT_TIME) {
+				// if game.GameType != "E" && game.GameDate.Before(CURRENT_TIME) {
+				// 	myTeam.LastGames = append(myTeam.LastGames, game)
+				// }
+
+				if game.GameType != "E" && game.Status.StatusCode == "F" {
 					myTeam.LastGames = append(myTeam.LastGames, game)
 				}
-
-				//                if (game.Status.StatusCode == "F") {
-				//                    myTeam.LastGames = append(myTeam.LastGames, game);
-				//                }
 			}
 		}
 
@@ -183,6 +187,11 @@ func (myTeam *TeamData) updateSchedule() {
 				break
 			}
 
+			// if today's date is not in our known schedule (precautionary)
+			if len(myTeam.Schedule) <= j {
+				break
+			}
+
 			for _, game := range myTeam.Schedule[j].Games {
 				// if the game status is not finished, add it to LastGames
 				if len(myTeam.NextGames) >= 3 {
@@ -191,13 +200,18 @@ func (myTeam *TeamData) updateSchedule() {
 
 				// Would rather look at StatusCode, but using a mock time
 				// in the past for CURRENT_TIME so we have to compare dates
-				if game.GameDate.After(CURRENT_TIME) {
+				// if game.GameType != "E" && game.GameDate.After(CURRENT_TIME) {
+				// 	myTeam.NextGames = append(myTeam.NextGames, game)
+				// }
+
+				if game.GameType != "E" && game.Status.StatusCode != "F" {
+					// here
+					loc, _ := time.LoadLocation("America/New_York")
+					game.PrettyGameDate = game.GameDate.In(loc).Format("Mon, 1/2")
+					game.PrettyGameTime = game.GameDate.In(loc).Format("3:04pm MST")
+
 					myTeam.NextGames = append(myTeam.NextGames, game)
 				}
-
-				//                if (game.Status.StatusCode != "F") {
-				//                    myTeam.NextGames = append(myTeam.NextGames, game);
-				//                }
 			}
 		}
 
@@ -297,13 +311,13 @@ func AppendUniqueGame(gameList []Game, games ...Game) []Game {
 			}
 		}
 
-		if !exists {
+		if !exists && newGame.GameType != "E" {
 
 			newGame.Teams.Home.Team = teamStore[string(newGame.Teams.Home.Team.ID)]
 			newGame.Teams.Away.Team = teamStore[string(newGame.Teams.Away.Team.ID)]
 
 			loc, _ := time.LoadLocation("America/New_York")
-			newGame.PrettyGameDate = newGame.GameDate.In(loc).Format("3:04pm MST")
+			newGame.PrettyGameTime = newGame.GameDate.In(loc).Format("3:04pm MST")
 
 			gameList = append(gameList, newGame)
 		}
@@ -344,13 +358,22 @@ func playersHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func playerHandler(w http.ResponseWriter, r *http.Request) {
-	playerId := PLAYER_IDS[r.URL.Path[len("/player/"):]]
-	myPlayer := playerStore[playerId]
-	t, _ := template.ParseFiles("player.html")
-	t.Execute(w, map[string]interface{}{
-		"PlayerData": myPlayer,
-		"TeamData":   teamStore[string(myPlayer.MlbData.CurrentTeam.ID)],
-	})
+	playerId := PLAYER_IDS[r.URL.Path[len("/players/"):]]
+
+	if playerId == "" {
+		t, _ := template.ParseFiles("players.html")
+		t.Execute(w, map[string]interface{}{
+			"PlayerStore": playerStore,
+		})
+	} else {
+		myPlayer := playerStore[playerId]
+		t, _ := template.ParseFiles("player.html")
+		t.Execute(w, map[string]interface{}{
+			"PlayerData": myPlayer,
+			"TeamData":   teamStore[string(myPlayer.MlbData.CurrentTeam.ID)],
+		})
+	}
+
 }
 
 var playerStore = make(map[string]*PlayerData)
@@ -365,9 +388,9 @@ var gameStore struct {
 
 func main() {
 	fmt.Println("This is project cupcake!")
-	// CURRENT_TIME = time.Now()
+	CURRENT_TIME = time.Now()
 	// CURRENT_TIME, _ = time.Parse(time.RFC3339, "2018-03-01")
-	CURRENT_TIME, _ = time.Parse(time.RFC3339, "2018-03-01T09:00:00Z")
+	// CURRENT_TIME, _ = time.Parse(time.RFC3339, "2018-03-01T09:00:00Z")
 	// CURRENT_TIME, _ = time.Parse(time.RFC3339, "2018-03-01T09:00:00Z")
 
 	// initialize the teamStore
@@ -395,8 +418,7 @@ func main() {
 	http.Handle("/assets/", http.StripPrefix("/assets/", staticFs))
 
 	http.HandleFunc("/", handler)
-	http.HandleFunc("/player/", cacher(playerHandler))
-	http.HandleFunc("/players/", playersHandler)
+	http.HandleFunc("/players/", playerHandler)
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
 	fmt.Println("Terminating the application...")

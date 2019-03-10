@@ -1,39 +1,106 @@
-<h1>Player Page</h1>
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-<h2>{{.PlayerData.MlbData.FullName}}</h2>
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Fira+Sans" rel="stylesheet">
+    <link href="/assets/style.css" rel="stylesheet" type="text/css" />
+    <title>State to the Show</title>
+</head>  
+    
+<body>
 
-<h3>{{.TeamData.Name}}</h3>
-
-<h3>Bulldogs: {{.TeamData.Bulldogs}}</h3>
-
-<h3>Updated: {{.PlayerData.Updated}}</h3>
-
-<div>
-    <h2>Last Three Games</h2>
-    {{range .TeamData.LastGames}}
-        <h3>Date: {{.GameDate}}</h3>
-        <p>Home: {{.Teams.Home.Team.Name}} {{.Teams.Home.Score}}</p>
-        <p>Away: {{.Teams.Away.Team.Name}} {{.Teams.Away.Score}}</p>
-    {{end}}
-</div>
-
-<div>
-    <h2>Next Three Games</h2>
-    {{range .TeamData.NextGames}}
-        <h3>Date: {{.GameDate}}</h3>
-        <p>Home: {{.Teams.Home.Team.Name}}</p>
-        <p>Away: {{.Teams.Away.Team.Name}}</p>
-    {{end}}
-</div>
-
-<div>
-    <h2>Schedule</h2>
-    {{range .TeamData.Schedule}}
-        <p>{{.Date}}</p>
-        <div>
-        {{range .Games}}
-            <p>{{.Teams.Away.Team.Name}} at {{.Teams.Home.Team.Name}}</p>
-        {{end}}
+    <div id="header">
+        <div id="title-bar">State to the Show</div>
+        <div id="player-title-bar">
+            <a href="./">
+            <div id="player-title-back"></div>
+            </a>
+            <div id="player-title-name">{{.PlayerData.MlbData.FullName}}</div>
         </div>
-    {{end}}
-</div>
+    </div>
+    
+    <div id="content">
+        <div id="mlb-header">Tap game to open on <a href="https://www.mlb.com" id="mlb-link">mlb.com</a></div>
+        <div class="schedule-header">Recent games:</div>
+        <div class="schedule">
+
+            <div class="schedule-day">
+                <div class="day-header"></div>
+                <div class="day-content">
+
+
+                    {{ range .TeamData.LastGames }}
+                    <a href="https://www.mlb.com/gameday/{{.GamePk}}" class="game">
+                        <div class="game-left">
+                            <div class="team-row">
+                                <div class="team-name">{{.Teams.Away.Team.Name}}</div>
+                                <div class="team-score">{{.Teams.Away.Score}}</div>
+                            </div>
+                            <div class="bulldog-row">
+                                {{ range .Teams.Away.Team.Bulldogs }}
+                                <div class="bulldog-name">{{ .InitLastName }}</div>
+                                {{ end }}
+                            </div>
+                            <div class="team-row">
+                                <div class="team-name">@ {{.Teams.Home.Team.Name}}</div>
+                                <div class="team-score">{{.Teams.Home.Score}}</div>
+                            </div>
+                            <div class="bulldog-row">
+                                {{ range .Teams.Home.Team.Bulldogs }}
+                                <div class="bulldog-name">{{ .InitLastName }}</div>
+                                {{ end }}
+                            </div>
+                        </div>
+                    </a>
+                    {{ end }}
+
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="schedule-header">Upcoming games:</div>
+        <div class="schedule">
+
+            <div class="schedule-day">
+                <div class="day-header"></div>
+                <div class="day-content">
+
+
+                    {{ range .TeamData.NextGames }}
+                    <a href="https://www.mlb.com/gameday/{{.GamePk}}" class="game">
+                        <div class="game-left">
+                            <div class="team-row">
+                                <div class="team-name">{{.Teams.Away.Team.Name}}</div>
+                            </div>
+                            <div class="bulldog-row">
+                                {{ range .Teams.Away.Team.Bulldogs }}
+                                <div class="bulldog-name">{{ .InitLastName }}</div>
+                                {{ end }}
+                            </div>
+                            <div class="team-row">
+                                <div class="team-name">@ {{.Teams.Home.Team.Name}}</div>
+                            </div>
+                            <div class="bulldog-row">
+                                {{ range .Teams.Home.Team.Bulldogs }}
+                                <div class="bulldog-name">{{ .InitLastName }}</div>
+                                {{ end }}
+                            </div>
+                        </div>
+                        <div class="game-right">
+                            {{ .PrettyGameDate }}<br />
+                            {{ .PrettyGameTime }}
+                        </div>
+                    </a>
+                    {{ end }}
+
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+    
+</body>
+</html>

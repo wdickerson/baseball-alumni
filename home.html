@@ -22,6 +22,7 @@
     </div>
     
     <div id="content">
+        <div id="mlb-header">Tap game to open on <a href="https://www.mlb.com" id="mlb-link">mlb.com</a></div>
         <div class="schedule-header">Recent games:</div>
         <div class="schedule">
 
@@ -31,19 +32,10 @@
                 <div class="day-content">
 
                     {{ range .Games }}
-                    <div class="game">
+                    <a href="https://www.mlb.com/gameday/{{.GamePk}}" class="game">
                         <div class="game-left">
                             <div class="team-row">
-                                <div class="team-name">{{.Teams.Home.Team.Name}}</div>
-                                <div class="team-score">{{.Teams.Home.Score}}</div>
-                            </div>
-                            <div class="bulldog-row">
-                                {{ range .Teams.Home.Team.Bulldogs }}
-                                <div class="bulldog-name">{{ .InitLastName }}</div>
-                                {{ end }}
-                            </div>
-                            <div class="team-row">
-                                <div class="team-name">@ {{.Teams.Away.Team.Name}}</div>
+                                <div class="team-name">{{.Teams.Away.Team.Name}}</div>
                                 <div class="team-score">{{.Teams.Away.Score}}</div>
                             </div>
                             <div class="bulldog-row">
@@ -51,8 +43,17 @@
                                 <div class="bulldog-name">{{ .InitLastName }}</div>
                                 {{ end }}
                             </div>
+                            <div class="team-row">
+                                <div class="team-name">@ {{.Teams.Home.Team.Name}}</div>
+                                <div class="team-score">{{.Teams.Home.Score}}</div>
+                            </div>
+                            <div class="bulldog-row">
+                                {{ range .Teams.Home.Team.Bulldogs }}
+                                <div class="bulldog-name">{{ .InitLastName }}</div>
+                                {{ end }}
+                            </div>
                         </div>
-                    </div>
+                    </a>
                     {{ end }}
 
                 </div>
@@ -70,27 +71,27 @@
                 <div class="day-content">
 
                     {{ range .Games }}
-                    <div class="game">
+                    <a href="https://www.mlb.com/gameday/{{.GamePk}}" class="game">
                         <div class="game-left">
                             <div class="team-row">
-                                <div class="team-name">{{.Teams.Home.Team.Name}}</div>
-                            </div>
-                            <div class="bulldog-row">
-                                {{ range .Teams.Home.Team.Bulldogs }}
-                                <div class="bulldog-name">{{ .InitLastName }}</div>
-                                {{ end }}
-                            </div>
-                            <div class="team-row">
-                                <div class="team-name">@ {{.Teams.Away.Team.Name}}</div>
+                                <div class="team-name">{{.Teams.Away.Team.Name}}</div>
                             </div>
                             <div class="bulldog-row">
                                 {{ range .Teams.Away.Team.Bulldogs }}
                                 <div class="bulldog-name">{{ .InitLastName }}</div>
                                 {{ end }}
                             </div>
+                            <div class="team-row">
+                                <div class="team-name">@ {{.Teams.Home.Team.Name}}</div>
+                            </div>
+                            <div class="bulldog-row">
+                                {{ range .Teams.Home.Team.Bulldogs }}
+                                <div class="bulldog-name">{{ .InitLastName }}</div>
+                                {{ end }}
+                            </div>
                         </div>
-                        <div class="game-right">{{ .PrettyGameDate }}</div>
-                    </div>
+                        <div class="game-right">{{ .PrettyGameTime }}</div>
+                    </a>
                     {{ end }}
 
                 </div>

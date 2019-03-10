@@ -10,6 +10,7 @@ body {
 
 #header {
   position: fixed;
+  width: 100%;
 }
 
 #title-bar {
@@ -20,14 +21,38 @@ body {
   padding: 1rem 0 1rem 0;
   color: white;
   background-color: #660000;
-  
+  width: 100%;
+}
+
+#player-title-bar {
+  height: 3.75rem;
+  line-height: 3.75rem;
+  padding: 0 1.25rem 0 0;
+  color: white;
+  background-color: #660000;
+}
+
+#player-title-back {
+  float: left;
+  padding-left: 1.25rem;
+  width: 3.75rem;
+  height: 3.75rem;
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAIGNIUk0AAHomAACAhAAA%2BgAAAIDo%0AAAB1MAAA6mAAADqYAAAXcJy6UTwAAAACYktHRAD/h4/MvwAAAAlwSFlzAAALEwAACxMBAJqcGAAA%0AAMlJREFUWMPt1zsOwjAQhGEfCcRLCdyKGpGCCuWqITwOMBQUa0Ukdrw7EkIb9/8nJYUnAYF7ggMO%0A/B/Q4MIEGgBAywI%2BeQC4MgDJv3CwBwrzuUBxPg9Q5HMAVT4NKPMpQJ2fBgzyU4BJfhwwyo8BZvnv%0AgORLniSgy/8CQH9Fw4%2B851yZQjxRc%2B7kmKg4l74QD%2Bw4q0KIO7ac2RITG84uEqLHmjO8YmLFWXZC%0A3LDkLDshunlEyfDqsGBPxyN3/J648/3sfzgOODD3vAHfNQFeezFWMAAAAABJRU5ErkJggg%3D%3D%0A);
+  background-size: 1.75rem 1.75rem;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+#player-title-name {
+  text-align: right;
+  font-size: 1.2rem;
 }
 
 .tab-bar {
   padding: 0 4vw 0 4vw;
   background-color: #660000;
   overflow: hidden;
-  
+  height: 3.75rem;
 }
 
 .tab-button {
@@ -42,7 +67,7 @@ body {
 }
 
 .tab-button.selected {
-  border-bottom: white solid 3px;
+  border-bottom: white solid .25rem;
 }
 
 .tab-link {
@@ -52,6 +77,23 @@ body {
 
 .tab-button:hover {
   cursor: pointer;
+}
+
+.schedule-header {
+  font-size: 1.25rem;
+  padding-top: 1rem;
+}
+
+#mlb-header {
+  padding-top: 1rem;
+  line-height: 2rem;
+  font-style: italic;
+}
+
+#mlb-link {
+  font-style: normal;
+  color: inherit;
+  text-decoration: underline;
 }
 
 #content {
@@ -84,6 +126,8 @@ body {
   display: flex;
   justify-content: space-between;
   align-content: space-between;
+  text-decoration: none;
+  color: inherit;
 }
 
 .game-left {
@@ -97,7 +141,7 @@ body {
   flex: 0 0 4rem;
   padding: 0 .5em 0 .5em;
   margin-left: .5em;
-  font-size: .8em;
+  font-size: .75em;
   font-weight: 300;
   color: #747474;
   display: flex;
