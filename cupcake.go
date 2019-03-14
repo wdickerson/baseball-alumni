@@ -81,6 +81,7 @@ type TeamData struct {
 	Schedule  []Day
 	LastGames []Game
 	NextGames []Game
+	Updated   time.Time
 }
 
 func (p *PlayerData) addPlayerToTeam() {
@@ -93,6 +94,11 @@ func (p *PlayerData) addPlayerToTeam() {
 func (p *PlayerData) updatePlayerMlbData() {
 
 	fmt.Println("lets update", p.UrlName)
+
+	if time.Since(p.Updated).Seconds() <= 3 {
+		fmt.Println("this player already up to date!")
+		return
+	}
 
 	// app-people-1.json
 	response, err := http.Get(fmt.Sprintf("https://statsapi.mlb.com/api/v1/people/%s?hydrate=currentTeam,team,stats(type=[yearByYear,careerRegularSeason,availableStats](team(league)),leagueListId=mlb_hist)&site=en", p.PlayerID))
@@ -107,9 +113,19 @@ func (p *PlayerData) updatePlayerMlbData() {
 		p.Updated = time.Now()
 		p.MlbData = mlbPeopleResponse.People[0]
 	}
+
+	// make sure team's sched is up to date
+	teamStore[string(p.MlbData.CurrentTeam.ID)].updateSchedule()
+
 }
 
 func (myTeam *TeamData) updateSchedule() {
+
+	if time.Since(myTeam.Updated).Seconds() <= 30 {
+		fmt.Println("this team sched is already updated:", myTeam.Name)
+		return
+	}
+
 	// Lets get the schedule/results for this players team
 	// app-schedule-1.json
 	response, err := http.Get(fmt.Sprintf("https://statsapi.mlb.com/api/v1/schedule/?sportId=1&teamId=%s&season=2019&startDate=2019-01-01&endDate=2020-12-31", myTeam.ID))
@@ -218,6 +234,8 @@ func (myTeam *TeamData) updateSchedule() {
 		sort.Slice(myTeam.NextGames, func(i, j int) bool {
 			return myTeam.NextGames[i].GameDate.Before(myTeam.NextGames[j].GameDate)
 		})
+
+		myTeam.Updated = time.Now()
 	}
 }
 
@@ -242,6 +260,12 @@ func initializeTeamStore() {
 }
 
 func updateGameStore() {
+
+	if time.Since(gameStore.Updated).Seconds() <= 5 {
+		fmt.Println("the game store is already updated!")
+		return
+	}
+
 	gameStore.LastDays = []Day{}
 	gameStore.NextDays = []Day{}
 
@@ -300,6 +324,8 @@ func updateGameStore() {
 			return gameStore.NextDays[k].Games[i].GameDate.Before(gameStore.NextDays[k].Games[j].GameDate)
 		})
 	}
+
+	gameStore.Updated = time.Now()
 }
 
 func AppendUniqueGame(gameList []Game, games ...Game) []Game {
@@ -326,22 +352,10 @@ func AppendUniqueGame(gameList []Game, games ...Game) []Game {
 	return gameList
 }
 
-func cacher(f http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		playerId := PLAYER_IDS[r.URL.Path[len("/player/"):]]
-		p := playerStore[playerId]
-		fmt.Println("Cache age: " + fmt.Sprintf("%.6f", time.Since(p.Updated).Seconds()))
-
-		if time.Since(p.Updated).Seconds() > 30 {
-			p.updatePlayerMlbData()
-		}
-
-		// call the next handler
-		f(w, r)
-	}
-}
-
 func handler(w http.ResponseWriter, r *http.Request) {
+
+	updateGameStore()
+
 	t, _ := template.ParseFiles("home.html")
 	// should not have to create a new interface here since only one argument
 	t.Execute(w, map[string]interface{}{
@@ -367,6 +381,9 @@ func playerHandler(w http.ResponseWriter, r *http.Request) {
 		})
 	} else {
 		myPlayer := playerStore[playerId]
+
+		myPlayer.updatePlayerMlbData()
+
 		t, _ := template.ParseFiles("player.html")
 		t.Execute(w, map[string]interface{}{
 			"PlayerData": myPlayer,
@@ -416,6 +433,7 @@ func main() {
 
 	staticFs := http.FileServer(http.Dir("assets"))
 	http.Handle("/assets/", http.StripPrefix("/assets/", staticFs))
+	http.Handle("/favicon.ico", staticFs)
 
 	http.HandleFunc("/", handler)
 	http.HandleFunc("/players/", playerHandler)
