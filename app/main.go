@@ -23,6 +23,20 @@ type Player struct {
 	CurrentTeam  struct {
 		ID json.Number
 	}
+	PrimaryPosition struct {
+		Abbreviation string
+	}
+	Stats []struct {
+		Splits []struct {
+			Season string
+			Stat   struct {
+				AtBats json.Number
+				Runs   json.Number
+				Hits   json.Number
+				Avg    json.Number
+			}
+		}
+	}
 }
 
 type MlbPeopleResponse struct {
@@ -93,10 +107,10 @@ func (p *PlayerData) addPlayerToTeam() {
 
 func (p *PlayerData) updatePlayerMlbData() {
 
-	fmt.Println("lets update", p.UrlName)
+	// fmt.Println("lets update", p.UrlName)
 
-	if time.Since(p.Updated).Seconds() <= 3 {
-		fmt.Println("this player already up to date!")
+	if time.Since(p.Updated).Seconds() <= 30 {
+		// fmt.Println("this player already up to date!")
 		return
 	}
 
@@ -114,6 +128,10 @@ func (p *PlayerData) updatePlayerMlbData() {
 		p.MlbData = mlbPeopleResponse.People[0]
 	}
 
+	// fmt.Println(p.MlbData.FullName)
+	// fmt.Println("p.MlbData.Stats[0].Splits[0].Stat.AtBats")
+	// fmt.Println(p.MlbData.Stats[0].Splits[0].Stat.AtBats)
+
 	// make sure team's sched is up to date
 	teamStore[string(p.MlbData.CurrentTeam.ID)].updateSchedule()
 
@@ -122,7 +140,7 @@ func (p *PlayerData) updatePlayerMlbData() {
 func (myTeam *TeamData) updateSchedule() {
 
 	if time.Since(myTeam.Updated).Seconds() <= 30 {
-		fmt.Println("this team sched is already updated:", myTeam.Name)
+		// fmt.Println("this team sched is already updated:", myTeam.Name)
 		return
 	}
 
@@ -261,8 +279,8 @@ func initializeTeamStore() {
 
 func updateGameStore() {
 
-	if time.Since(gameStore.Updated).Seconds() <= 5 {
-		fmt.Println("the game store is already updated!")
+	if time.Since(gameStore.Updated).Seconds() <= 30 {
+		// fmt.Println("the game store is already updated!")
 		return
 	}
 

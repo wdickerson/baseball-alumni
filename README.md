@@ -5,6 +5,12 @@ Track your college's baseball alumni in the MLB
 
 1. Set `players.json` as desired
 
-2. `go run cupcake.go`  
+2.  
+`cd app`  
+`go run main.go`  
 
 3. Point your browser to `localhost:8080`
+
+## View it live (beta!!!)  
+
+[https://www.statetotheshow.com](https://www.statetotheshow.com)  
